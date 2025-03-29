@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Animate.css for animations */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
+
+/* Custom animations */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes pulse-border {
+    0% {
+        border-color: rgba(79, 70, 229, 0.5);
+    }
+    50% {
+        border-color: rgba(79, 70, 229, 1);
+    }
+    100% {
+        border-color: rgba(79, 70, 229, 0.5);
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-in-right {
+    0% {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scale-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Animation utilities */
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-border {
+    animation: pulse-border 2s ease-in-out infinite;
+}
+
+.animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+    animation: slide-in 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+    animation: slide-in-right 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+    animation: scale-in 0.5s ease-out forwards;
+}
+
+.animate-delay-100 {
+    animation-delay: 100ms;
+}
+
+.animate-delay-200 {
+    animation-delay: 200ms;
+}
+
+.animate-delay-300 {
+    animation-delay: 300ms;
+}
+
+.animate-delay-400 {
+    animation-delay: 400ms;
+}
+
+.animate-delay-500 {
+    animation-delay: 500ms;
+}
+
+/* Common components */
+.btn-primary {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200;
+}
+
+.btn-secondary {
+    @apply border-2 border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white font-medium px-5 py-2.5 rounded-lg transition-all duration-200;
+}
+
+.btn-outline {
+    @apply border-2 border-gray-300 text-gray-700 hover:border-indigo-500 hover:text-indigo-600 font-medium px-5 py-2.5 rounded-lg transition-all duration-200;
+}
+
+.card {
+    @apply bg-white shadow-md hover:shadow-lg rounded-xl p-6 border border-gray-100 transition-all duration-300;
+}
+
+.card-hover {
+    @apply hover:-translate-y-1 hover:shadow-xl transition-all duration-300;
+}
+
+.input-field {
+    @apply w-full px-4 py-3 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-200;
+}
+
+/* Gradient text */
+.text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600;
+}
+
+/* Custom styling for auth pages */
+.auth-container {
+    @apply min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8;
+}
+
+.auth-card {
+    @apply bg-white py-8 px-6 shadow-xl rounded-xl sm:px-10 border border-gray-100;
+}
+
+/* Educational theme specific styles */
+.knowledge-card {
+    @apply bg-white rounded-xl shadow-lg border border-indigo-100 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1;
+}
+
+.progress-bar {
+    @apply h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full;
+}
+
+.achievement-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800;
+}
+
+.note-card {
+    @apply p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg;
+}
+
+.tip-card {
+    @apply p-4 bg-blue-50 border-l-4 border-blue-400 rounded-lg;
+}
+
+.warning-card {
+    @apply p-4 bg-red-50 border-l-4 border-red-400 rounded-lg;
+}
+
+/* Staggered animation classes */
+.stagger-item:nth-child(1) {
+    animation-delay: 0ms;
+}
+.stagger-item:nth-child(2) {
+    animation-delay: 100ms;
+}
+.stagger-item:nth-child(3) {
+    animation-delay: 200ms;
+}
+.stagger-item:nth-child(4) {
+    animation-delay: 300ms;
+}
+.stagger-item:nth-child(5) {
+    animation-delay: 400ms;
+}
+.stagger-item:nth-child(6) {
+    animation-delay: 500ms;
+}
+
+/* Study focus mode */
+.focus-mode {
+    @apply fixed inset-0 bg-indigo-900 bg-opacity-95 z-50 flex items-center justify-center;
+}
+
+/* Learning progress visualization */
+.learning-progress-circle {
+    @apply rounded-full overflow-hidden relative inline-flex items-center justify-center;
+    background: conic-gradient(
+        from 0deg,
+        #6366f1 var(--progress),
+        #e0e7ff var(--progress)
+    );
+}
+
+/* Dashboard widgets */
+.stat-card {
+    @apply flex flex-col bg-white rounded-xl shadow-md p-6 border border-indigo-100;
+}
+
+.stat-value {
+    @apply text-3xl font-bold text-indigo-600;
+}
+
+.stat-label {
+    @apply text-sm font-medium text-gray-500;
+}
+
+/* Calendar styling */
+.calendar-day {
+    @apply w-10 h-10 flex items-center justify-center rounded-full;
+}
+
+.calendar-day-active {
+    @apply bg-indigo-600 text-white;
+}
+
+.calendar-day-has-event {
+    @apply border-2 border-indigo-400;
+}
