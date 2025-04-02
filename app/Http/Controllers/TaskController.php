@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Goal;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,11 +15,23 @@ class TaskController extends Controller
         return view('tasks.index', compact('goals'));
     }
 
-    public function list($goalId)
+    public function list(Request $request, $goalId)
     {
-        $tasks = Task::where('goal_id', $goalId)->get();
-        $goal  = Goal::where('id', $goalId)->get()->first();
-        return view('tasks.list', compact('tasks', 'goal'));
+        // Get the week offset from query parameters (default to 0)
+        $weekOffset = (int) $request->query('week', 0);
+
+        // Get the specific selected date or default to today's date
+        $selectedDate = $request->query('date', Carbon::now()->format('Y-m-d'));
+
+        // Fetch tasks only for the selected date
+        $tasks = Task::where('goal_id', $goalId)
+            ->whereDate('planned_date', $selectedDate)
+            ->get();
+
+        // Get goal details
+        $goal = Goal::findOrFail($goalId);
+
+        return view('tasks.list', compact('tasks', 'goal', 'weekOffset', 'selectedDate'));
     }
 
     public function edit($id) // function for finding the task which needed to be edited

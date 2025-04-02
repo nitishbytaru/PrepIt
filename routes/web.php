@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
 
     # Routes related to goals
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::get('/tasks/goal/{id}', [TaskController::class, 'list'])->name('tasks.list');
+    Route::get('/tasks/goal/{goalId}', [TaskController::class, 'list'])->name('tasks.list');
     Route::get('/tasks/edit/{id}', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::patch('/tasks/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
     Route::get('/tasks/finish', [TaskController::class, 'finish'])->name('tasks.finish');

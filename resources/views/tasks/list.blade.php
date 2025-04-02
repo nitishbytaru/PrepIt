@@ -1,9 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-2xl text-center animate-fade-in">
-            <span class="text-gradient">Learning Tasks for <span
-                    class="text-indigo-600">{{ $goal->title ?? 'your goals' }}</span></span>
-        </h2>
+        <h3 class="text-xl font-semibold text-indigo-800">
+            Learning Tasks for <span
+                class="text-indigo-600">{{ \Carbon\Carbon::parse($selectedDate)->format('d M Y') }}</span>
+        </h3>
     </x-slot>
 
     <div class="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-6 animate-scale-in">
@@ -57,31 +57,42 @@
                 <div class="grid grid-cols-7 gap-2 text-center">
                     @php
                         $today = \Carbon\Carbon::now();
-                        $startOfWeek = $today->copy()->startOfWeek();
+                        $startOfWeek = $today->copy()->startOfWeek()->addWeeks($weekOffset);
                         $weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                     @endphp
 
+                    <!-- Previous Week Button -->
+                    <a href="{{ route('tasks.list', ['goalId' => $goal->id, 'week' => $weekOffset - 1]) }}"
+                        class="p-2 bg-gray-200 rounded-md hover:bg-gray-300">&lt;</a>
+
                     @foreach ($weekDays as $index => $day)
                         @php
-                            $currentDate = $startOfWeek->copy()->addDays($index);
-                            $hasTask = $tasks->where('planned_date', $currentDate->format('Y-m-d'))->count() > 0;
-                            $isToday = $today->isSameDay($currentDate);
+                            $currentDate = $startOfWeek->copy()->addDays($index)->format('Y-m-d');
+                            $hasTask = $tasks->where('planned_date', $currentDate)->count() > 0;
+                            $isToday = \Carbon\Carbon::now()->format('Y-m-d') === $currentDate;
                         @endphp
-                        <div
-                            class="{{ $isToday ? 'bg-indigo-100 border-indigo-300' : ($hasTask ? 'bg-white border-indigo-200' : 'bg-gray-50 border-gray-200') }} 
-                                    border rounded-lg p-2 transition-all duration-300 hover:shadow-md
-                                    {{ $hasTask ? 'hover:border-indigo-400' : '' }}">
+                        <a href="{{ route('tasks.list', ['goalId' => $goal->id, 'date' => $currentDate]) }}"
+                            class="block border rounded-lg p-2 transition-all duration-300 hover:shadow-md
+                                {{ $isToday ? 'bg-indigo-100 border-indigo-300' : ($hasTask ? 'bg-white border-indigo-200' : 'bg-gray-50 border-gray-200') }}
+                                {{ $hasTask ? 'hover:border-indigo-400' : '' }}">
                             <p class="text-xs font-semibold {{ $isToday ? 'text-indigo-800' : 'text-gray-600' }}">
                                 {{ $day }}</p>
                             <p class="text-sm {{ $isToday ? 'text-indigo-800 font-bold' : 'text-gray-800' }}">
-                                {{ $currentDate->format('d') }}</p>
+                                {{ \Carbon\Carbon::parse($currentDate)->format('d') }}</p>
                             @if ($hasTask)
                                 <div class="mt-1 w-2 h-2 bg-indigo-500 rounded-full mx-auto"></div>
                             @endif
-                        </div>
+                        </a>
                     @endforeach
+
+
+
+                    <!-- Next Week Button -->
+                    <a href="{{ route('tasks.list', ['goalId' => $goal->id, 'week' => $weekOffset + 1]) }}"
+                        class="p-2 bg-gray-200 rounded-md hover:bg-gray-300">&gt;</a>
                 </div>
             </div>
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($tasks as $index => $task)
