@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class GoalController extends Controller
 {
-    //resuded functions
+    // ------------------------ helper functions ------------------
     private function validateGoalRequest(Request $request)
     {
         return $request->validate([
@@ -40,6 +40,7 @@ class GoalController extends Controller
 
         return (int) (($weeks * $time_per_week) + ($remainingDays * ($time_per_week / 7)));
     }
+    // ------------------------ end helper functions ------------------
 
     public function index()
     {

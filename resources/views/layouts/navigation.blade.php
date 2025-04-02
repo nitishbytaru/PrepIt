@@ -7,7 +7,6 @@
                 <div class="shrink-0 flex items-center animate-float">
                     <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
                         <x-application-logo class="block h-10 w-auto text-white" />
-                        <span class="text-white text-2xl font-bold">PrepIt</span>
                     </a>
                 </div>
 
@@ -16,6 +15,10 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                         class="px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-white/20 font-medium' : '' }}">
                         <span class="stagger-item animate-slide-in">{{ __('Dashboard') }}</span>
+                    </x-nav-link>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
+                        class="px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-white/20 font-medium' : '' }}">
+                        <span class="stagger-item animate-slide-in">{{ __('Today Tasks') }}</span>
                     </x-nav-link>
                     <x-nav-link :href="route('timeslots.index')" :active="request()->routeIs('timeslots.index')"
                         class="px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('timeslots.index') ? 'bg-white/20 font-medium' : '' }}">
@@ -33,7 +36,7 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6 animate-fade-in animate-delay-300">
+            <div class="z-20 hidden sm:flex sm:items-center sm:ms-6 animate-fade-in animate-delay-300">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button

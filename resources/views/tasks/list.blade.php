@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-    <div class="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-6 animate-scale-in">
+    <div class="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-6 animate-scale-in">
         @if (session('success'))
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6 animate-fade-in">
                 {{ session('success') }}
@@ -14,7 +14,7 @@
         @endif
 
         <div class="flex items-center justify-between mb-8">
-            <h3 class="text-xl font-semibold text-indigo-800">Your learning sessions</h3>
+            <h3 class="text-xl font-semibold text-indigo-800">Your learning journey</h3>
 
             <!-- Button to Generate Next 30 Days of Tasks -->
             <form action="{{ route('goals.generateMoreTasks', ['id' => $goal->id]) }}" method="POST">
@@ -31,11 +31,64 @@
         </div>
 
         @if (count($tasks) > 0)
-            <div class="space-y-6">
+            <!-- Task Progress Summary -->
+            <div class="bg-indigo-50 rounded-xl p-6 mb-8 animate-fade-in">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-white rounded-lg shadow-sm">
+                        <p class="text-indigo-500 font-semibold text-sm uppercase">Completed</p>
+                        <p class="text-3xl font-bold text-indigo-700">
+                            {{ $tasks->where('status', 'completed')->count() }}</p>
+                    </div>
+                    <div class="p-4 bg-white rounded-lg shadow-sm">
+                        <p class="text-amber-500 font-semibold text-sm uppercase">Pending</p>
+                        <p class="text-3xl font-bold text-amber-600">{{ $tasks->where('status', 'pending')->count() }}
+                        </p>
+                    </div>
+                    <div class="p-4 bg-white rounded-lg shadow-sm">
+                        <p class="text-slate-500 font-semibold text-sm uppercase">Total</p>
+                        <p class="text-3xl font-bold text-slate-700">{{ $tasks->count() }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Calendar View -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-indigo-800 mb-4">This Week's Schedule</h3>
+                <div class="grid grid-cols-7 gap-2 text-center">
+                    @php
+                        $today = \Carbon\Carbon::now();
+                        $startOfWeek = $today->copy()->startOfWeek();
+                        $weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    @endphp
+
+                    @foreach ($weekDays as $index => $day)
+                        @php
+                            $currentDate = $startOfWeek->copy()->addDays($index);
+                            $hasTask = $tasks->where('planned_date', $currentDate->format('Y-m-d'))->count() > 0;
+                            $isToday = $today->isSameDay($currentDate);
+                        @endphp
+                        <div
+                            class="{{ $isToday ? 'bg-indigo-100 border-indigo-300' : ($hasTask ? 'bg-white border-indigo-200' : 'bg-gray-50 border-gray-200') }} 
+                                    border rounded-lg p-2 transition-all duration-300 hover:shadow-md
+                                    {{ $hasTask ? 'hover:border-indigo-400' : '' }}">
+                            <p class="text-xs font-semibold {{ $isToday ? 'text-indigo-800' : 'text-gray-600' }}">
+                                {{ $day }}</p>
+                            <p class="text-sm {{ $isToday ? 'text-indigo-800 font-bold' : 'text-gray-800' }}">
+                                {{ $currentDate->format('d') }}</p>
+                            @if ($hasTask)
+                                <div class="mt-1 w-2 h-2 bg-indigo-500 rounded-full mx-auto"></div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($tasks as $index => $task)
-                    <div class="knowledge-card animate-fade-in" style="animation-delay: {{ $index * 100 }}ms">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-indigo-800">{{ $task->title }}</h3>
+                    <a href="{{ route('tasks.edit', $task->id) }}"
+                        class="knowledge-card hover:shadow-lg transition-all duration-300 animate-fade-in group"
+                        style="animation-delay: {{ $index * 100 }}ms">
+                        <div class="absolute top-3 right-3">
                             <span
                                 class="px-3 py-1 text-xs font-bold text-white rounded-full
                                 {{ $task->status === 'completed' ? 'bg-emerald-500' : ($task->status === 'pending' ? 'bg-amber-500' : 'bg-slate-500') }}">
@@ -43,93 +96,43 @@
                             </span>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <p class="text-sm text-gray-600 flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span><strong>Planned Date:</strong>
-                                        {{ \Carbon\Carbon::parse($task->planned_date)->format('d M Y') }}</span>
-                                </p>
-                                <p class="text-sm text-gray-600 flex items-center gap-2 mt-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span><strong>Planned Time:</strong> {{ $task->planned_start_time }} -
-                                        {{ $task->planned_end_time }}</span>
-                                </p>
-                            </div>
-                            <div>
-                                @if ($task->actual_start_time && $task->actual_end_time)
-                                    <p class="text-sm text-gray-600 flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <span><strong>Actual Time:</strong> {{ $task->actual_start_time }} -
-                                            {{ $task->actual_end_time }}</span>
-                                    </p>
-                                @endif
-                            </div>
-                        </div>
+                        <h3
+                            class="text-lg font-bold text-indigo-800 mb-3 pr-24 group-hover:text-indigo-600 transition-colors">
+                            {{ $task->title }}</h3>
 
-                        <!-- Action Buttons -->
-                        <div class="flex flex-wrap gap-2">
-                            <a href="{{ route('tasks.edit', $task->id) }}"
-                                class="btn-outline text-sm py-1 px-3 inline-flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                        <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                            {{ $task->description ?? 'Click to add a description for this learning task.' }}
+                        </p>
+
+                        <div class="border-t border-indigo-100 pt-4 mt-auto">
+                            <p class="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                Edit
-                            </a>
-                            <form action="{{ route('tasks.finish', $task->id) }}" method="POST">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit"
-                                    class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm py-1 px-3 rounded-lg inline-flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                    Completed
-                                </button>
-                            </form>
-                            <form action="{{ route('tasks.postpone', $task->id) }}" method="POST">
-                                @csrf
-                                <button type="submit"
-                                    class="bg-amber-500 hover:bg-amber-600 text-white text-sm py-1 px-3 rounded-lg inline-flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Postpone
-                                </button>
-                            </form>
-                            <form action="{{ route('tasks.dismiss', $task->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded-lg inline-flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                    Dismiss
-                                </button>
-                            </form>
+                                <span>{{ \Carbon\Carbon::parse($task->planned_date)->format('d M Y') }}</span>
+                            </p>
+                            <p class="text-sm text-gray-600 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{{ $task->planned_start_time }} - {{ $task->planned_end_time }}</span>
+                            </p>
                         </div>
-                    </div>
+
+                        <div class="mt-4 flex items-center justify-end text-indigo-600 font-medium text-sm">
+                            <span class="group-hover:underline">View & Edit</span>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </div>
+                    </a>
                 @endforeach
             </div>
         @else
@@ -150,5 +153,11 @@
                 </form>
             </div>
         @endif
+
+        <div class="mt-8 tip-card animate-fade-in animate-delay-300">
+            <p class="font-medium">📚 Learning Tip:</p>
+            <p>Breaking down large learning goals into smaller, daily tasks can increase your productivity by up to 80%
+                and significantly reduce learning anxiety.</p>
+        </div>
     </div>
 </x-app-layout>

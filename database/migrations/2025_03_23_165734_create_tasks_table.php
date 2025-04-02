@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('goal_id')->constrained('goals')->onDelete('cascade');
             $table->string('title');
+            $table->text('description')->nullable()->after('title');
             $table->date('planned_date');
             $table->time('planned_start_time');
             $table->time('planned_end_time');

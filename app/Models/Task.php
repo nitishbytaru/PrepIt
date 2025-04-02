@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +9,7 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['goal_id', 'title', 'planned_date', 'planned_start_time', 'planned_end_time', 'actual_start_time', 'actual_end_time', 'status'];
+    protected $fillable = ['goal_id', 'title', 'description', 'planned_date', 'planned_start_time', 'planned_end_time', 'actual_start_time', 'actual_end_time', 'status'];
 
     public function goal(): BelongsTo
     {
