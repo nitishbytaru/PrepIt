@@ -16,8 +16,8 @@
                         class="px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-white/20 font-medium' : '' }}">
                         <span class="stagger-item animate-slide-in">{{ __('Dashboard') }}</span>
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                        class="px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-white/20 font-medium' : '' }}">
+                    <x-nav-link :href="route('todaytasks.index')" :active="request()->routeIs('todaytasks.index')"
+                        class="px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-all duration-300 {{ request()->routeIs('todaytasks.index') ? 'bg-white/20 font-medium' : '' }}">
                         <span class="stagger-item animate-slide-in">{{ __('Today Tasks') }}</span>
                     </x-nav-link>
                     <x-nav-link :href="route('timeslots.index')" :active="request()->routeIs('timeslots.index')"

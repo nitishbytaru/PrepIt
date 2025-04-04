@@ -44,18 +44,6 @@
                             class="input-field w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             required>
                     </div>
-                    <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <select id="status" name="status"
-                            class="input-field w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            <option value="pending" {{ old('status', $task->status) == 'pending' ? 'selected' : '' }}>
-                                Pending</option>
-                            <option value="completed"
-                                {{ old('status', $task->status) == 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="postponed"
-                                {{ old('status', $task->status) == 'postponed' ? 'selected' : '' }}>Postponed</option>
-                        </select>
-                    </div>
                 </div>
 
                 <!-- Planned Time -->
@@ -105,50 +93,6 @@
                 </button>
             </div>
         </form>
-
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-3 gap-4 mt-8 animate-fade-in animate-delay-200">
-            <form action="{{ route('tasks.finish', $task->id) }}" method="POST">
-                @csrf
-                @method('PATCH')
-                <button type="submit"
-                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Mark Complete
-                </button>
-            </form>
-
-            <form action="{{ route('tasks.postpone', $task->id) }}" method="POST">
-                @csrf
-                <button type="submit"
-                    class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Postpone
-                </button>
-            </form>
-
-            <form action="{{ route('tasks.dismiss', $task->id) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit"
-                    class="w-full bg-red-500 hover:bg-red-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
-                    onclick="return confirm('Are you sure you want to dismiss this task? This action cannot be undone.')">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Dismiss
-                </button>
-            </form>
-        </div>
 
         <!-- Return to List Button -->
         <div class="mt-8 text-center animate-fade-in animate-delay-300">

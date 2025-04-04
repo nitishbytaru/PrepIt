@@ -5,6 +5,7 @@ use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TimeslotController;
+use App\Http\Controllers\TodayController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,6 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/goals/update/{id}', [GoalController::class, 'update'])->name('goals.update');
     Route::delete('/goals/{id}', [GoalController::class, 'destroy'])->name('goals.destroy');
     Route::post('/goals/{id}/generate-more-tasks', [GoalController::class, 'generateMoreTasks'])->name('goals.generateMoreTasks');
+
+    # Routes related to today tasks
+    Route::get('/todaytasks', [TodayController::class, 'index'])->name('todaytasks.index');
 
     # Routes related to goals
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');

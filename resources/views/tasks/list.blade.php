@@ -1,8 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h3 class="text-xl font-semibold text-indigo-800">
-            Learning Tasks for <span
-                class="text-indigo-600">{{ \Carbon\Carbon::parse($selectedDate)->format('d M Y') }}</span>
+            Tasks in Goal: {{ $goal->title }}
         </h3>
     </x-slot>
 
@@ -30,72 +29,30 @@
             </form>
         </div>
 
-        @if (count($tasks) > 0)
+        @if (count($allTasks) > 0)
             <!-- Task Progress Summary -->
             <div class="bg-indigo-50 rounded-xl p-6 mb-8 animate-fade-in">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                     <div class="p-4 bg-white rounded-lg shadow-sm">
                         <p class="text-indigo-500 font-semibold text-sm uppercase">Completed</p>
                         <p class="text-3xl font-bold text-indigo-700">
-                            {{ $tasks->where('status', 'completed')->count() }}</p>
+                            {{ $allTasks->where('status', 'completed')->count() }}</p>
                     </div>
                     <div class="p-4 bg-white rounded-lg shadow-sm">
                         <p class="text-amber-500 font-semibold text-sm uppercase">Pending</p>
-                        <p class="text-3xl font-bold text-amber-600">{{ $tasks->where('status', 'pending')->count() }}
+                        <p class="text-3xl font-bold text-amber-600">
+                            {{ $allTasks->where('status', 'pending')->count() }}
                         </p>
                     </div>
                     <div class="p-4 bg-white rounded-lg shadow-sm">
                         <p class="text-slate-500 font-semibold text-sm uppercase">Total</p>
-                        <p class="text-3xl font-bold text-slate-700">{{ $tasks->count() }}</p>
+                        <p class="text-3xl font-bold text-slate-700">{{ $allTasks->count() }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Tasks Calendar View -->
-            <div class="mb-8">
-                <h3 class="text-lg font-semibold text-indigo-800 mb-4">This Week's Schedule</h3>
-                <div class="grid grid-cols-7 gap-2 text-center">
-                    @php
-                        $today = \Carbon\Carbon::now();
-                        $startOfWeek = $today->copy()->startOfWeek()->addWeeks($weekOffset);
-                        $weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                    @endphp
-
-                    <!-- Previous Week Button -->
-                    <a href="{{ route('tasks.list', ['goalId' => $goal->id, 'week' => $weekOffset - 1]) }}"
-                        class="p-2 bg-gray-200 rounded-md hover:bg-gray-300">&lt;</a>
-
-                    @foreach ($weekDays as $index => $day)
-                        @php
-                            $currentDate = $startOfWeek->copy()->addDays($index)->format('Y-m-d');
-                            $hasTask = $tasks->where('planned_date', $currentDate)->count() > 0;
-                            $isToday = \Carbon\Carbon::now()->format('Y-m-d') === $currentDate;
-                        @endphp
-                        <a href="{{ route('tasks.list', ['goalId' => $goal->id, 'date' => $currentDate]) }}"
-                            class="block border rounded-lg p-2 transition-all duration-300 hover:shadow-md
-                                {{ $isToday ? 'bg-indigo-100 border-indigo-300' : ($hasTask ? 'bg-white border-indigo-200' : 'bg-gray-50 border-gray-200') }}
-                                {{ $hasTask ? 'hover:border-indigo-400' : '' }}">
-                            <p class="text-xs font-semibold {{ $isToday ? 'text-indigo-800' : 'text-gray-600' }}">
-                                {{ $day }}</p>
-                            <p class="text-sm {{ $isToday ? 'text-indigo-800 font-bold' : 'text-gray-800' }}">
-                                {{ \Carbon\Carbon::parse($currentDate)->format('d') }}</p>
-                            @if ($hasTask)
-                                <div class="mt-1 w-2 h-2 bg-indigo-500 rounded-full mx-auto"></div>
-                            @endif
-                        </a>
-                    @endforeach
-
-
-
-                    <!-- Next Week Button -->
-                    <a href="{{ route('tasks.list', ['goalId' => $goal->id, 'week' => $weekOffset + 1]) }}"
-                        class="p-2 bg-gray-200 rounded-md hover:bg-gray-300">&gt;</a>
-                </div>
-            </div>
-
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach ($tasks as $index => $task)
+                @foreach ($tasksPaginated as $index => $task)
                     <a href="{{ route('tasks.edit', $task->id) }}"
                         class="knowledge-card hover:shadow-lg transition-all duration-300 animate-fade-in group"
                         style="animation-delay: {{ $index * 100 }}ms">
@@ -145,6 +102,9 @@
                         </div>
                     </a>
                 @endforeach
+                <div class="mt-6">
+                    {{ $tasksPaginated->links() }}
+                </div>
             </div>
         @else
             <div class="knowledge-card p-8 text-center animate-fade-in">

@@ -175,6 +175,7 @@ class GoalController extends Controller
                         if (! Task::where('goal_id', $goal->id)->where('planned_date', $currentDate->toDateString())->exists()) {
                             Task::create([
                                 'goal_id'            => $goal->id,
+                                'user_id'            => Auth::id(),
                                 'title'              => $goal->title . " Task" . $taskCount++,
                                 'planned_date'       => $currentDate->toDateString(),
                                 'planned_start_time' => $taskStart->format('H:i'),
@@ -202,7 +203,7 @@ class GoalController extends Controller
 
         $this->generateTasks($goal, $startDate);
 
-        return redirect()->route('tasks.list', ['id' => $goal->id])->with('success', 'Next 30 days of tasks generated.');
+        return redirect()->route('tasks.list', ['goalId' => $goal->id])->with('success', 'Next 30 days of tasks generated.');
     }
 
 }

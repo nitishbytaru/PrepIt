@@ -51,9 +51,9 @@
                 <p class="text-sm text-gray-500 mt-1">This helps us calculate your daily study schedule</p>
             </div>
 
-            {{-- Preferred Study Time (Optional) --}}
+            {{-- Preferred Study Time  --}}
             <div class="mb-5 animate-slide-in stagger-item">
-                <label class="block text-indigo-700 font-medium mb-2">Preferred Study Time (Optional)</label>
+                <label class="block text-indigo-700 font-medium mb-2">Preferred Study Time</label>
                 <div class="flex items-center gap-2">
                     <input type="time" name="preferred_start_time" class="input-field w-36">
                     <span class="text-gray-600">to</span>

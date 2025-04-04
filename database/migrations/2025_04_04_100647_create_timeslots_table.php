@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('timeslots', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->unique();
-            $table->integer('interval'); // Study session duration in minutes
-            $table->json('preferred_start_time'); // JSON to store multiple preferred start times
-            $table->json('preferred_end_time'); // JSON to store multiple end times
-            $table->json('working_days'); // JSON array of working days
-            $table->json('compensation_days'); // JSON array of compensation days
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->integer('interval');
+            $table->json('preferred_start_time');
+            $table->json('preferred_end_time');
+            $table->json('working_days');
+            $table->json('compensation_days');
             $table->timestamps();
         });
     }

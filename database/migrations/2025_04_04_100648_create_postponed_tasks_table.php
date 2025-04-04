@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('postponed_tasks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('original_task_id')->constrained('tasks')->onDelete('cascade');
-            $table->foreignId('goal_id')->constrained('goals')->onDelete('cascade');
+            $table->foreignId('goal_id')->constrained()->onDelete('cascade');
             $table->date('original_date');
             $table->time('original_start_time');
             $table->time('original_end_time');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->time('new_start_time');
             $table->time('new_end_time');
             $table->text('reason');
-            $table->enum('status', ['completed', 'pending', 'failed'])->default('pending');
+            $table->string('status');
             $table->timestamps();
         });
     }
