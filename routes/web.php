@@ -45,9 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks/goal/{goalId}', [TaskController::class, 'list'])->name('tasks.list');
     Route::get('/tasks/edit/{id}', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::patch('/tasks/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
-    Route::get('/tasks/finish', [TaskController::class, 'finish'])->name('tasks.finish');
-    Route::get('/tasks/postpone', [TaskController::class, 'postpone'])->name('tasks.postpone');
-    Route::get('/tasks/dismiss', [TaskController::class, 'dismiss'])->name('tasks.dismiss');
+    Route::patch('/tasks/finish/{taskId}', [TaskController::class, 'finish'])->name('tasks.finish');
+    Route::patch('/tasks/postpone/{taskId}', [TaskController::class, 'postpone'])->name('tasks.postpone');
+    Route::delete('/tasks/dismiss/{taskId}', [TaskController::class, 'dismiss'])->name('tasks.dismiss');
 });
 
 require __DIR__ . '/auth.php';

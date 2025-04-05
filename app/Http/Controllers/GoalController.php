@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
 use App\Models\Goal;
 use App\Models\Task;
 use App\Models\Timeslot;
@@ -180,7 +181,7 @@ class GoalController extends Controller
                                 'planned_date'       => $currentDate->toDateString(),
                                 'planned_start_time' => $taskStart->format('H:i'),
                                 'planned_end_time'   => $taskFinishTime->format('H:i'),
-                                'status'             => 'pending',
+                                'status'             => TaskStatus::Pending->value,
                             ]);
                         }
 

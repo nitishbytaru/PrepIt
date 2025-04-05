@@ -59,8 +59,8 @@
                         <div class="absolute top-3 right-3">
                             <span
                                 class="px-3 py-1 text-xs font-bold text-white rounded-full
-                                {{ $task->status === 'completed' ? 'bg-emerald-500' : ($task->status === 'pending' ? 'bg-amber-500' : 'bg-slate-500') }}">
-                                {{ ucfirst($task->status) }}
+                                {{ $task->statusColor() }}">
+                                {{ ucfirst($task->status->value) }}
                             </span>
                         </div>
 

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->time('planned_end_time');
             $table->time('actual_start_time')->nullable();
             $table->time('actual_end_time')->nullable();
-            $table->string('status');
+            $table->enum('status', ['pending',  'complete', 'postpone', 'dismissed'])->default('pending');
             $table->timestamps();
         });
     }

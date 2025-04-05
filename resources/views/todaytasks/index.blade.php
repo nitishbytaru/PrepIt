@@ -53,13 +53,14 @@
         </div>
 
         @if (count($tasks) > 0)
+
             <!-- Task Progress Summary -->
             <div class="bg-indigo-50 rounded-xl p-6 mb-8 animate-fade-in">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                     <div class="p-4 bg-white rounded-lg shadow-sm">
                         <p class="text-indigo-500 font-semibold text-sm uppercase">Completed</p>
                         <p class="text-3xl font-bold text-indigo-700">
-                            {{ $tasks->where('status', 'completed')->count() }}</p>
+                            {{ $tasks->where('status', 'complete')->count() }}</p>
                     </div>
                     <div class="p-4 bg-white rounded-lg shadow-sm">
                         <p class="text-amber-500 font-semibold text-sm uppercase">Pending</p>
@@ -80,8 +81,8 @@
                         <div class="absolute top-3 right-3">
                             <span
                                 class="px-3 py-1 text-xs font-bold text-white rounded-full
-                            {{ $task->status === 'completed' ? 'bg-emerald-500' : ($task->status === 'pending' ? 'bg-amber-500' : 'bg-slate-500') }}">
-                                {{ ucfirst($task->status) }}
+                             {{ $task->statusColor() }}">
+                                {{ ucfirst($task->status->value) }}
                             </span>
                         </div>
 
@@ -111,50 +112,55 @@
                                 <span>{{ $task->planned_start_time }} - {{ $task->planned_end_time }}</span>
                             </p>
                         </div>
+
                         <!-- Action Buttons -->
-                        <div class="grid grid-cols-3 gap-4 mt-8 animate-fade-in animate-delay-200">
-                            <form action="{{ route('tasks.finish', $task->id) }}" method="POST">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit"
-                                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 13l4 4L19 7" />
-                                    </svg>
-                                    Mark Complete
-                                </button>
-                            </form>
+                        @php
+                            $status = $task->status->value;
+                            $showComplete = in_array($status, ['pending', 'postpone']);
+                            $showPostpone = in_array($status, ['pending', 'postpone']);
+                            $showDismiss = in_array($status, ['pending', 'postpone', 'complete']);
+                            $buttonCount = ($showComplete ? 1 : 0) + ($showPostpone ? 1 : 0) + ($showDismiss ? 1 : 0);
+                        @endphp
 
-                            <form action="{{ route('tasks.postpone', $task->id) }}" method="POST">
-                                @csrf
-                                <button type="submit"
-                                    class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Postpone
-                                </button>
-                            </form>
+                        <div class="grid grid-cols-{{ $buttonCount }} gap-4 mt-8 animate-fade-in animate-delay-200">
+                            @if ($showComplete)
+                                <!-- Mark Complete -->
+                                <form action="{{ route('tasks.finish', $task->id) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                        class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">
+                                        ✅ Mark Complete
+                                    </button>
+                                </form>
+                            @endif
 
-                            <form action="{{ route('tasks.dismiss', $task->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="w-full bg-red-500 hover:bg-red-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
-                                    onclick="return confirm('Are you sure you want to dismiss this task? This action cannot be undone.')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                    Dismiss
-                                </button>
-                            </form>
+                            @if ($showPostpone)
+                                <!-- Postpone -->
+                                <form action="{{ route('tasks.postpone', $task->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">
+                                        ⏳ Postpone
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if ($showDismiss)
+                                <!-- Dismiss -->
+                                <form action="{{ route('tasks.dismiss', $task->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="w-full bg-red-500 hover:bg-red-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all"
+                                        onclick="return confirm('Are you sure?')">
+                                        ❌ Dismiss
+                                    </button>
+                                </form>
+                            @endif
                         </div>
+
+
                     </div>
                 @endforeach
             </div>

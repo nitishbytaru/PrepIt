@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
 use App\Models\Goal;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -40,21 +41,32 @@ class TaskController extends Controller
         ]));
 
         return $this->list($task->goal_id);
-
     }
 
-    public function finish()
+    public function finish($taskId)
     {
-        echo "marked this task as finished ";
+        $task         = Task::findOrFail($taskId);
+        $task->status = TaskStatus::Complete;
+        $task->save();
+
+        return redirect()->back()->with('success', 'Task marked as completed!');
     }
 
-    public function postpone()
+    public function postpone($taskId)
     {
-        echo "marked this task as postponed ";
+        $task         = Task::findOrFail($taskId);
+        $task->status = TaskStatus::Postpone;
+        $task->save();
+
+        return redirect()->back()->with('success', 'Task Postponed!');
     }
 
-    public function dismiss()
+    public function dismiss($taskId)
     {
-        echo "successfully dismissed this task ";
+        $task = Task::findOrFail($taskId);
+        $task->delete();
+
+        return redirect()->back()->with('success', 'Successfully dismissed this task.');
     }
+
 }
