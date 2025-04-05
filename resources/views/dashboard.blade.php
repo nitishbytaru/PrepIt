@@ -75,6 +75,115 @@
                 </div>
             </div>
 
+            {{-- Pending Tasks Until Yesterday --}}
+            <div class="bg-white shadow-xl rounded-xl p-6 animate__animated animate__fadeInUp">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Pending Tasks Until Yesterday
+                </h2>
+
+                @if ($pendingTasks->count())
+                    @foreach ($pendingTasks as $task)
+                        <div class="knowledge-card hover:shadow-lg transition-all duration-300 animate-fade-in group">
+                            <div class="absolute top-3 right-3">
+                                <span
+                                    class="px-3 py-1 text-xs font-bold text-white rounded-full
+                     {{ $task->statusColor() }}">
+                                    {{ ucfirst($task->status->value) }}
+                                </span>
+                            </div>
+
+                            <h3
+                                class="text-lg font-bold text-indigo-800 mb-3 pr-24 group-hover:text-indigo-600 transition-colors">
+                                {{ $task->title }}</h3>
+
+                            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                                {{ $task->description ?? 'Click to add a description for this learning task.' }}
+                            </p>
+
+                            <div class="border-t border-indigo-100 pt-4 mt-auto">
+                                <p class="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>{{ \Carbon\Carbon::parse($task->planned_date)->format('d M Y') }}</span>
+                                </p>
+                                <p class="text-sm text-gray-600 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>{{ $task->planned_start_time }} - {{ $task->planned_end_time }}</span>
+                                </p>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            @php
+                                $status = $task->status->value;
+                                $showComplete = in_array($status, ['pending', 'postpone']);
+                                $showPostpone = in_array($status, ['pending', 'postpone']);
+                                $showDismiss = in_array($status, ['pending', 'postpone', 'complete']);
+                                $buttonCount =
+                                    ($showComplete ? 1 : 0) + ($showPostpone ? 1 : 0) + ($showDismiss ? 1 : 0);
+                            @endphp
+
+                            <div
+                                class="grid grid-cols-{{ $buttonCount }} gap-4 mt-8 animate-fade-in animate-delay-200">
+                                @if ($showComplete)
+                                    <!-- Mark Complete -->
+                                    <form action="{{ route('tasks.finish', $task->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">
+                                            ✅ Mark Complete
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if ($showPostpone)
+                                    <!-- Postpone -->
+                                    <form action="{{ route('tasks.postpone', $task->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">
+                                            ⏳ Postpone
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if ($showDismiss)
+                                    <!-- Dismiss -->
+                                    <form action="{{ route('tasks.dismiss', $task->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="w-full bg-red-500 hover:bg-red-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all"
+                                            onclick="return confirm('Are you sure?')">
+                                            ❌ Dismiss
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+
+
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center text-gray-500 py-6">
+                        <p>No pending tasks from previous days. You're all caught up! 🎉</p>
+                    </div>
+                @endif
+            </div>
+
+
             <!-- Goals Section -->
             <div class="bg-white shadow-xl rounded-xl overflow-hidden animate__animated animate__fadeInUp"
                 style="animation-delay: 0.2s;">
