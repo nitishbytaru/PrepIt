@@ -137,11 +137,12 @@
 
                             @if ($showPostpone)
                                 <!-- Postpone -->
-                                <form action="{{ route('tasks.postpone', $task->id) }}" method="POST">
+                                <form action="{{ route('todaytasks.postpone', $task->id) }}"
+                                    method="POST" onsubmit="return confirm('Postpone this task to a makeup day?')">
                                     @csrf
                                     <button type="submit"
-                                        class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">
-                                        ⏳ Postpone
+                                        class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded">
+                                        Postpone
                                     </button>
                                 </form>
                             @endif

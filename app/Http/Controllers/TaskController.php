@@ -64,9 +64,14 @@ class TaskController extends Controller
     public function dismiss($taskId)
     {
         $task = Task::findOrFail($taskId);
+
+        // Delete associated postponed records
+        PostponedTask::where('original_task_id', $task->id)->delete();
+
+        // Delete the task
         $task->delete();
 
-        return redirect()->back()->with('success', 'Successfully dismissed this task.');
+        return redirect()->back()->with('success', 'Task dismissed and removed successfully!');
     }
 
 }

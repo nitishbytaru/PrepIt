@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
 
     # Routes related to today tasks
     Route::get('/todaytasks', [TodayController::class, 'index'])->name('todaytasks.index');
+    Route::post('/todaytasks/{id}/postpone', [TodayController::class, 'postponeToMakeupDay'])->name('todaytasks.postpone');
 
     # Routes related to goals
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
